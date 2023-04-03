@@ -1,0 +1,15 @@
+.box {
+  position: relative;
+  width: 100%;
+  padding: 20px;
+  background: white;
+  overflow: hidden;
+}
+
+.box-content {
+  display: none;
+}
+
+.box-content.active {
+  display: block;
+}
