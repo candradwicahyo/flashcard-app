@@ -21,8 +21,8 @@ window.onload = () => {
   
   function clear() {
     // bersihkan value input
-    inputQuestion.value = '';
-    inputAnswer.value = '';
+    const forms = document.querySelectorAll('.form');
+    forms.forEach(form => form.reset());
   }
   
   // ketika tombol submit djtekan, jalankan fungsi addData()
@@ -33,18 +33,13 @@ window.onload = () => {
     // jika judul modal bertuliskan kata "add"
     if (modal.textContent.includes('add')) {
       // value input 
-      const question = inputQuestion.value.trim();
-      const answer = inputAnswer.value.trim();
+      const data = getInputValues();
       // validasi input terlebih dahulu
-      if (validate(question, answer) == true) {
-        // jadikan value input sebagai objek
-        const data = {question: question, answer: answer};
+      if (validate(data) == true) {
         // simpan isi variabel "data" kedalam array
         tasks.unshift(data);
         // simpan kedalam localstorage
         saveToLocalStorage();
-        // tampilkan element ke halaman depan
-        updateUI(data);
         // beri pesan bahwa "data berhasil ditanbahkan"
         alerts('success', 'Data has been added!');
         // load data yang sudah tersimpan didalam localstorage
@@ -55,7 +50,14 @@ window.onload = () => {
     }
   }
   
-  function validate(question, answer) {
+  function getInputValues() {
+    return {
+      question: inputQuestion.value.trim(),
+      answer: inputAnswer.value.trim()
+    };
+  }
+  
+  function validate({ question, answer }) {
     // jika semua input kosong
     if (!question && !answer) return alerts('error', 'field`s was empty!');
     // jika input "question" kosong
@@ -187,25 +189,22 @@ window.onload = () => {
       // cek judul modal apakah bertuliskan kata "edit"
       if (modal.textContent.includes('edit')) {
         // value input 
-        const question = inputQuestion.value.trim();
-        const answer = inputAnswer.value.trim();
+        const data = getInputValues();
         // validasi input lebih dahulu
-        if (validate(question, answer) == true) {
+        if (validate(data) == true) {
           // ubah isi array dengan index dari paramter "index" dengan value input
-          tasks[index].question = question;
-          tasks[index].answer = answer;
+          tasks[index] = data;
           // simpan perubahannya kedalam localstorage
           saveToLocalStorage();
           // beri pesan bahwa "data berhasil diubah atau diedit"
           alerts('success', 'Data has been updated!');
-          /*
-            jadikan variabel "tasks" dan parameter "index" sebagai "null" guna
-            mencegah adanya data yang terduplikat
-          */
-          tasks = null;
-          index = null;
           // load data yang sudah disimpan kedalam localstorage
           loadData();
+          /*
+            jadikan parameter "index" sebagai "null" guna
+            mencegah adanya data yang terduplikat
+          */
+          index = null;
         }
       }
     });
@@ -244,7 +243,7 @@ window.onload = () => {
         // load data yang sudah disimpan kedalam localstorage
         loadData();
       }
-    })
+    });
   } 
   
   // pencarian data
